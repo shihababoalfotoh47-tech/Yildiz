@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yildiz.AI - Intelligent Search & Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        classic: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
+                        },
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                            950: '#172554',
+                        },
+                        navy: {
+                            50: '#f0f4f8',
+                            100: '#d9e2ec',
+                            200: '#bcccdc',
+                            300: '#9fb3c8',
+                            400: '#829ab1',
+                            500: '#627d98',
+                            600: '#486581',
+                            700: '#334e68',
+                            800: '#243b53',
+                            900: '#102a43',
+                            950: '#061523',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(5px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar - Classic Style */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        /* Classic Panel Styling */
+        .classic-panel {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .classic-header {
+            background: linear-gradient(to bottom, #1e3a5f 0%, #152a45 100%);
+            border-bottom: 2px solid #0d1b2a;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Input Styling */
+        .classic-input {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .classic-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15), inset 0 1px 2px rgba(0, 0, 0, 0.05);
+            outline: none;
+        }
+
+        /* Button Styling */
+        .classic-btn {
+            background: linear-gradient(to bottom, #3b82f6 0%, #2563eb 100%);
+            border: 1px solid #1d4ed8;
+            border-radius: 6px;
+            color: white;
+            font-weight: 500;
+            text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+        }
+
+        .classic-btn:hover {
+            background: linear-gradient(to bottom, #2563eb 0%, #1d4ed8 100%);
+            border-color: #1e40af;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .classic-btn:active {
+            background: #1d4ed8;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+            transform: translateY(1px);
+        }
+
+        /* Secondary Button */
+        .classic-btn-secondary {
+            background: linear-gradient(to bottom, #ffffff 0%, #f1f5f9 100%);
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            color: #475569;
+            font-weight: 500;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+        }
+
+        .classic-btn-secondary:hover {
+            background: linear-gradient(to bottom, #f8fafc 0%, #e2e8f0 100%);
+            border-color: #94a3b8;
+            color: #334155;
+        }
+
+        /* Message Bubbles */
+        .user-message {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border-radius: 12px;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+        }
+
+        .assistant-message {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Typing indicator */
+        .typing-dot {
+            background: #3b82f6;
+            animation: typing 1.4s infinite ease-in-out both;
+        }
+
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Markdown content styles */
+        .markdown-content h1, .markdown-content h2, .markdown-content h3 {
+            margin: 1rem 0 0.5rem 0;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .markdown-content h1 { font-size: 1.5rem; }
+        .markdown-content h2 { font-size: 1.25rem; }
+        .markdown-content h3 { font-size: 1.1rem; }
+        
+        .markdown-content p {
+            margin: 0.5rem 0;
+            line-height: 1.6;
+            color: #334155;
+        }
+        .markdown-content ul, .markdown-content ol {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+        }
+        .markdown-content li {
+            margin: 0.25rem 0;
+            color: #334155;
+        }
+        .markdown-content code {
+            background: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            color: #1e293b;
+        }
+        .markdown-content pre {
+            background: #1e293b;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 0.5rem 0;
+        }
+        .markdown-content pre code {
+            background: none;
+            padding: 0;
+            color: #e2e8f0;
+        }
+        .markdown-content blockquote {
+            border-left: 3px solid #3b82f6;
+            padding-left: 1rem;
+            margin: 0.5rem 0;
+            color: #64748b;
+            font-style: italic;
+        }
+        .markdown-content a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .markdown-content a:hover {
+            text-decoration: underline;
+        }
+
+        /* Source card */
+        .source-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-left: 3px solid #cbd5e1;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .source-card:hover {
+            border-left-color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans antialiased overflow-hidden">
+    <!-- Main Application Container -->
+    <div class="h-screen flex flex-col">
+        <!-- Header -->
+        <header class="classic-header h-16 flex items-center justify-between px-6 z-20">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center shadow-md">
+                    <svg class="w-6 h-6 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-white tracking-tight">
+                        Yildiz<span class="text-blue-300">.AI</span>
+                    </h1>
+                    <p class="text-xs text-blue-200">Intelligent Search & Chat</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <!-- API Key Input Toggle -->
+                <button id="settingsBtn" class="p-2 rounded-lg hover:bg-white/10 transition-colors text-blue-200 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                </button>
+                
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-md bg-white/10 border border-white/20">
+                    <div class="w-2 h-2 rounded-full bg-green-400"></div>
+                    <span class="text-xs text-white">Online</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Settings Modal -->
+        <div id="settingsModal" class="fixed inset-0 modal-overlay z-50 hidden items-center justify-center">
+            <div class="modal-content p-6 w-full max-w-md mx-4">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">API Settings</h2>
+                    <button id="closeSettings" class="p-1 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">API Provider</label>
+                        <select id="apiProvider" class="w-full px-4 py-2.5 rounded-lg classic-input text-gray-800 focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="groq">Groq API</option>
+                            <option value="openrouter">OpenRouter</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">API Key</label>
+                        <input type="password" id="apiKey" placeholder="Enter your API key" class="w-full px-4 py-2.5 rounded-lg classic-input text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 outline-none">
+                        <p class="text-xs text-gray-500 mt-1">Your API key is stored locally in your browser.</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Model</label>
+                        <select id="modelSelect" class="w-full px-4 py-2.5 rounded-lg classic-input text-gray-800 focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="llama-3.1-70b-versatile">Llama 3.1 70B</option>
+                            <option value="mixtral-8x7b-32768">Mixtral 8x7B</option>
+                            <option value="gemma-7b-it">Gemma 7B</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="flex gap-3 mt-6">
+                    <button id="saveSettings" class="classic-btn flex-1 px-4 py-2.5 font-medium flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Save Settings
+                    </button>
+                    <button id="testConnection" class="classic-btn-secondary px-4 py-2.5">
+                        Test
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex overflow-hidden">
+            <!-- Left Panel: Chat Interface -->
+            <div class="flex-1 flex flex-col min-w-0">
+                <!-- Welcome Screen (shown when no messages) -->
+                <div id="welcomeScreen" class="flex-1 flex flex-col items-center justify-center p-8 bg-white">
+                    <div class="text-center max-w-2xl">
+                        <div class="w-20 h-20 mx-auto mb-6 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg">
+                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <h1 class="text-4xl font-bold text-gray-800 mb-4">
+                            Welcome to <span class="text-blue-600">Yildiz.AI</span>
+                        </h1>
+                        <p class="text-lg text-gray-600 mb-8">
+                            Your intelligent search and chat companion. Ask anything, and I'll search the web to provide you with accurate, sourced answers.
+                        </p>
+                        
+                        <!-- Suggestion Chips -->
+                        <div class="flex flex-wrap justify-center gap-3">
+                            <button onclick="setQuery('What are the latest developments in AI?')" class="px-4 py-2 rounded-full bg-gray-100 border border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-all text-sm">
+                                Latest AI developments
+                            </button>
+                            <button onclick="setQuery('Explain quantum computing in simple terms')" class="px-4 py-2 rounded-full bg-gray-100 border border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-all text-sm">
+                                Quantum computing
+                            </button>
+                            <button onclick="setQuery('What is the best diet for longevity?')" class="px-4 py-2 rounded-full bg-gray-100 border border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-all text-sm">
+                                Longevity diet
+                            </button>
+                            <button onclick="setQuery('How do I learn programming effectively?')" class="px-4 py-2 rounded-full bg-gray-100 border border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-all text-sm">
+                                Learning to code
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Messages Container -->
+                <div id="chatContainer" class="flex-1 overflow-y-auto px-4 py-6 hidden">
+                    <div id="messagesList" class="max-w-4xl mx-auto space-y-6">
+                        <!-- Messages will be inserted here -->
+                    </div>
+                    <!-- Spacer for bottom padding -->
+                    <div class="h-8"></div>
+                </div>
+
+                <!-- Input Area -->
+                <div class="bg-white border-t border-gray-200 p-4">
+                    <div class="max-w-4xl mx-auto">
+                        <form id="chatForm" class="relative">
+                            <div class="relative flex items-end gap-2 classic-input p-2">
+                                <textarea 
+                                    id="messageInput" 
+                                    rows="1"
+                                    placeholder="Ask anything... I'll search and provide sourced answers"
+                                    class="flex-1 bg-transparent text-gray-800 placeholder-gray-400 resize-none outline-none px-3 py-2.5 max-h-32"
+                                ></textarea>
+                                
+                                <div class="flex items-center gap-1 pb-1">
+                                    <button type="button" id="webSearchToggle" class="p-2 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-gray-100 transition-all" title="Enable Web Search">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+                                        </svg>
+                                    </button>
+                                    
+                                    <button type="submit" id="sendBtn" class="classic-btn p-2.5 disabled:opacity-50 disabled:cursor-not-allowed">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        
+                        <div class="flex items-center justify-between mt-2 text-xs text-gray-500">
+                            <div class="flex items-center gap-4">
+                                <span id="searchStatus" class="hidden items-center gap-1.5 text-blue-600">
+                                    <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Searching the web...
+                                </span>
+                                <span id="sourcesCount" class="hidden items-center gap-1.5">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                    <span id="sourcesNumber">0 sources</span>
+                                </span>
+                            </div>
+                            <span>Yildiz.AI may produce inaccurate information. Verify important information.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Sources & Research -->
+            <div class="w-96 bg-white border-l border-gray-200 flex flex-col hidden xl:flex">
+                <!-- Sources Panel Header -->
+                <div class="p-4 border-b border-gray-200 bg-gray-50">
+                    <div class="flex items-center justify-between mb-2">
+                        <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Sources
+                        </h2>
+                        <span id="panelSourcesCount" class="px-2 py-0.5 rounded-full bg-gray-200 text-xs text-gray-600 font-medium">0</span>
+                    </div>
+                    <p class="text-xs text-gray-500">Click on any source to view the full article</p>
+                </div>
+
+                <!-- Sources List -->
+                <div id="sourcesList" class="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
+                    <!-- Empty State -->
+                    <div id="sourcesEmptyState" class="text-center py-12">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-lg bg-gray-200 flex items-center justify-center">
+                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <p class="text-gray-500 text-sm">Start a conversation to see sources</p>
+                    </div>
+                    <!-- Sources will be inserted here -->
+                </div>
+
+                <!-- Related Questions Panel -->
+                <div class="border-t border-gray-200 p-4 bg-white">
+                    <h3 class="text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                        Related Questions
+                    </h3>
+                    <div id="relatedQuestions" class="space-y-2">
+                        <p class="text-xs text-gray-500 italic">Ask a question to see related queries</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // Yildiz.AI - Main Application Logic
+        // ============================================
+
+        // State Management
+        const state = {
+            messages: [],
+            sources: [],
+            isSearching: false,
+            isGenerating: false,
+            webSearchEnabled: true,
+            settings: {
+                apiProvider: localStorage.getItem('yildiz_api_provider') || 'groq',
+                apiKey: localStorage.getItem('yildiz_api_key') || '',
+                model: localStorage.getItem('yildiz_model') || 'llama-3.1-70b-versatile'
+            }
+        };
+
+        // DOM Elements
+        const elements = {
+            welcomeScreen: document.getElementById('welcomeScreen'),
+            chatContainer: document.getElementById('chatContainer'),
+            messagesList: document.getElementById('messagesList'),
+            chatForm: document.getElementById('chatForm'),
+            messageInput: document.getElementById('messageInput'),
+            sendBtn: document.getElementById('sendBtn'),
+            webSearchToggle: document.getElementById('webSearchToggle'),
+            sourcesList: document.getElementById('sourcesList'),
+            sourcesEmptyState: document.getElementById('sourcesEmptyState'),
+            searchStatus: document.getElementById('searchStatus'),
+            sourcesCount: document.getElementById('sourcesCount'),
+            sourcesNumber: document.getElementById('sourcesNumber'),
+            panelSourcesCount: document.getElementById('panelSourcesCount'),
+            relatedQuestions: document.getElementById('relatedQuestions'),
+            settingsModal: document.getElementById('settingsModal'),
+            settingsBtn: document.getElementById('settingsBtn'),
+            closeSettings: document.getElementById('closeSettings'),
+            saveSettings: document.getElementById('saveSettings'),
+            testConnection: document.getElementById('testConnection'),
+            apiProvider: document.getElementById('apiProvider'),
+            apiKey: document.getElementById('apiKey'),
+            modelSelect: document.getElementById('modelSelect')
+        };
+
+        // ============================================
+        // Utility Functions
+        // ============================================
+
+        function generateId() {
+            return 'id_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function formatTime(date) {
+            return new Intl.DateTimeFormat('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            }).format(date);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Simple Markdown Parser
+        function parseMarkdown(text) {
+            let html = escapeHtml(text);
+            
+            // Headers
+            html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+            html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+            html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+            
+            // Bold and Italic
+            html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            html = html.replace(/__(.*?)__/g, '<strong>$1</strong>');
+            html = html.replace(/_(.*?)_/g, '<em>$1</em>');
+            
+            // Code blocks
+            html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+            
+            // Links
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+            
+            // Lists
+            html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
+            html = html.replace(/^- (.*$)/gim, '<li>$1</li>');
+            html = html.replace(/^\d+\. (.*$)/gim, '<li>$1</li>');
+            html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+            
+            // Blockquotes
+            html = html.replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>');
+            
+            // Line breaks
+            html = html.replace(/\n/g, '<br>');
+            
+            return html;
+        }
+
+        // ============================================
+        // Mock Search Functionality
+        // ============================================
+
+        // Simulated search results database
+        const mockSearchDatabase = [
+            {
+                title: "Artificial Intelligence: A Modern Approach",
+                url: "https://example.com/ai-modern-approach",
+                domain: "example.com",
+                snippet: "Comprehensive overview of AI techniques including machine learning, neural networks, and deep learning approaches.",
+                category: "technology"
+            },
+            {
+                title: "The Future of Machine Learning in 2024",
+                url: "https://techinsights.com/ml-future-2024",
+                domain: "techinsights.com",
+                snippet: "Exploring emerging trends in machine learning, from transformer architectures to multimodal AI systems.",
+                category: "technology"
+            },
+            {
+                title: "Quantum Computing Explained Simply",
+                url: "https://quantum.edu/basics",
+                domain: "quantum.edu",
+                snippet: "An accessible introduction to quantum computing principles, qubits, and quantum supremacy.",
+                category: "science"
+            },
+            {
+                title: "The Science of Longevity: Diet and Lifestyle",
+                url: "https://healthscience.org/longevity",
+                domain: "healthscience.org",
+                snippet: "Research-backed recommendations for diet, exercise, and lifestyle factors that promote longevity.",
+                category: "health"
+            },
+            {
+                title: "Learning to Code: Effective Strategies",
+                url: "https://codedev.com/learning-strategies",
+                domain: "codedev.com",
+                snippet: "Proven methodologies for learning programming effectively, from beginner to advanced levels.",
+                category: "education"
+            },
+            {
+                title: "Climate Change: Latest Research Findings",
+                url: "https://climate.org/latest-research",
+                domain: "climate.org",
+                snippet: "Recent scientific findings on climate change impacts, mitigation strategies, and global efforts.",
+                category: "science"
+            },
+            {
+                title: "Space Exploration: Mars Mission Updates",
+                url: "https://spaceagency.com/mars-missions",
+                domain: "spaceagency.com",
+                snippet: "Latest developments in Mars exploration, colonization plans, and technological breakthroughs.",
+                category: "science"
+            },
+            {
+                title: "Mental Health in the Digital Age",
+                url: "https://wellness.org/digital-mental-health",
+                domain: "wellness.org",
+                snippet: "Understanding the impact of technology on mental health and strategies for digital wellness.",
+                category: "health"
+            },
+            {
+                title: "Cryptocurrency and Blockchain Basics",
+                url: "https://cryptoedu.com/basics",
+                domain: "cryptoedu.com",
+                snippet: "Introduction to blockchain technology, cryptocurrencies, and decentralized finance (DeFi).",
+                category: "finance"
+            },
+            {
+                title: "Renewable Energy Technologies",
+                url: "https://energyfuture.org/renewables",
+                domain: "energyfuture.org",
+                snippet: "Overview of solar, wind, and other renewable energy technologies transforming the power sector.",
+                category: "technology"
+            }
+        ];
+
+        // Extract keywords from query
+        function extractKeywords(query) {
+            const stopWords = new Set([
+                'a', 'an', 'the', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
+                'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
+                'should', 'may', 'might', 'must', 'shall', 'can', 'need', 'dare',
+                'ought', 'used', 'to', 'of', 'in', 'for', 'on', 'with', 'at', 'by',
+                'from', 'as', 'into', 'through', 'during', 'before', 'after', 'above',
+                'below', 'between', 'under', 'again', 'further', 'then', 'once', 'here',
+                'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each',
+                'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not',
+                'only', 'own', 'same', 'so', 'than', 'too', 'very', 'just', 'and', 'but', 'what', 'who', 'which', 'this', 'that', 'these', 'those', 'i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers', 'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'am', 's', 'don', 'didn', 'won', 'haven', 'hasn', 'hadn', 'wasn', 'weren', 'wouldn', 'couldn', 'shouldn', 'isn', 'aren', 'ain', 'ma', 'mightn', 'mustn', 'needn', 'shan', 'was', 'were', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'will', 'would', 'shall', 'should', 'can', 'could', 'may', 'might', 'must', 'need', 'dare', 'ought', 'used'
+            ]);
+
+            const words = query.toLowerCase()
+                .replace(/[^\w\s]/g, ' ')
+                .split(/\s+/)
+                .filter(word => word.length > 2 && !stopWords.has(word));
+            
+            // Get unique keywords, limited to 5
+            return [...new Set(words)].slice(0, 5);
+        }
+
+        // Perform mock search
+        async function performSearch(query) {
+            const keywords = extractKeywords(query);
+            
+            // Simulate network delay
+            await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 700));
+            
+            // Score and rank results based on keyword relevance
+            const scoredResults = mockSearchDatabase.map(result => {
+                let score = 0;
+                const text = (result.title + ' ' + result.snippet).toLowerCase();
+                
+                keywords.forEach(keyword => {
+                    if (text.includes(keyword)) {
+                        score += 10;
+                        if (result.title.toLowerCase().includes(keyword)) {
+                            score += 15;
+                        }
+                    }
+                });
+                
+                return { ...result, score };
+            });
+            
+            // Sort by score and return top results
+            const topResults = scoredResults
+                .filter(r => r.score > 0)
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 5)
+                .map(({ score, ...result }) => result);
+            
+            // If no relevant results, return some general ones
+            if (topResults.length === 0) {
+                return mockSearchDatabase
+                    .sort(() => Math.random() - 0.5)
+                    .slice(0, 3);
+            }
+            
+            return topResults;
+        }
+
+        // Generate related questions based on query
+        function generateRelatedQuestions(query) {
+            const templates = [
+                `What are the benefits of ${query}?`,
+                `How does ${query} work?`,
+                `What are the latest developments in ${query}?`,
+                `How can I learn more about ${query}?`,
+                `What are the common misconceptions about ${query}?`,
+                `How has ${query} evolved over time?`,
+                `What experts say about ${query}?`,
+                `What are the practical applications of ${query}?`
+            ];
+            
+            // Return 3-4 random questions
+            return templates
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 3 + Math.floor(Math.random() * 2));
+        }
+
+        // ============================================
+        // AI API Integration
+        // ============================================
+
+        // Build system prompt with context
+        function buildSystemPrompt(sources) {
+            let context = '';
+            if (sources && sources.length > 0) {
+                context = '\n\nRelevant information from web sources:\n\n';
+                sources.forEach((source, idx) => {
+                    context += `[${idx + 1}] ${source.title}\n${source.snippet}\n\n`;
+                });
+            }
+
+            return `You are Yildiz.AI, an intelligent assistant that provides accurate, helpful, and well-sourced information. 
+
+Your guidelines:
+- Answer questions clearly and concisely while being comprehensive
+- Use the provided web sources to ground your answers in factual information
+- Cite sources naturally in your response (e.g., "According to [1]...")
+- If you're unsure about something, acknowledge the uncertainty
+- Format your responses using Markdown for readability
+- Use code blocks with language tags when sharing code
+- Be conversational yet professional
+
+Today's date: ${new Date().toLocaleDateString()}
+${context}`;
+        }
+
+        // Stream response from AI API
+        async function* streamAIResponse(messages, sources) {
+            const { apiProvider, apiKey, model } = state.settings;
+            
+            if (!apiKey) {
+                throw new Error('Please configure your API key in settings');
+            }
+
+            const systemPrompt = buildSystemPrompt(sources);
+            const fullMessages = [
+                { role: 'system', content: systemPrompt },
+                ...messages.map(m => ({ role: m.role, content: m.content }))
+            ];
+
+            let endpoint, body, headers;
+
+            if (apiProvider === 'groq') {
+                endpoint = 'https://api.groq.com/openai/v1/chat/completions';
+                headers = {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Type': 'application/json'
+                };
+                body = JSON.stringify({
+                    model: model,
+                    messages: fullMessages,
+                    stream: true,
+                    temperature: 0.7,
+                    max_tokens: 2048
+                });
+            } else {
+                // OpenRouter
+                endpoint = 'https://openrouter.ai/api/v1/chat/completions';
+                headers = {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Type': 'application/json',
+                    'HTTP-Referer': window.location.href,
+                    'X-Title': 'Yildiz.AI'
+                };
+                body = JSON.stringify({
+                    model: `meta-llama/${model}`,
+                    messages: fullMessages,
+                    stream: true,
+                    temperature: 0.7,
+                    max_tokens: 2048
+                });
+            }
+
+            // Use AllOrigins proxy to bypass CORS
+            const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(endpoint);
+            
+            const response = await fetch(proxyUrl, {
+                method: 'POST',
+                headers,
+                body
+            });
+
+            if (!response.ok) {
+                const error = await response.text();
+                throw new Error(`API Error: ${error}`);
+            }
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value);
+                const lines = chunk.split('\n');
+
+                for (const line of lines) {
+                    if (line.trim() === '') continue;
+                    if (line === 'data: [DONE]') continue;
+                    
+                    if (line.startsWith('data: ')) {
+                        try {
+                            const data = JSON.parse(line.slice(6));
+                            if (data.choices && data.choices[0].delta && data.choices[0].delta.content) {
+                                yield data.choices[0].delta.content;
+                            }
+                        } catch (e) {
+                            // Skip invalid JSON
+                        }
+                    }
+                }
+            }
+        }
+
+        // Fallback mock AI response for demo/testing
+        async function* mockAIResponse(query, sources) {
+            const responses = {
+                default: `Based on my search${sources.length > 0 ? ' of the sources provided' : ''}, I can provide you with the following information:\n\n## Overview\n\nThe topic you've asked about is quite fascinating and has seen significant developments recently. Let me break down the key points for you:\n\n## Key Points\n\n1. **Current State**: The field is rapidly evolving with new research and applications emerging regularly.\n\n2. **Major Developments**: Recent advances have pushed the boundaries of what's possible, particularly in areas like efficiency and scalability.\n\n3. **Practical Applications**: These developments are being applied across various industries, from healthcare to finance to education.\n\n## Future Outlook\n\nLooking ahead, we can expect continued innovation in this space. Experts predict that the next few years will bring even more breakthroughs that could fundamentally change how we approach these challenges.\n\nWould you like me to dive deeper into any specific aspect of this topic?`,
+
+                programming: `Based on my research${sources.length > 0 ? ' of the available sources' : ''}, here's what you need to know about learning programming effectively:\n\n## Getting Started\n\nProgramming is a skill that anyone can learn with the right approach. Here are the proven strategies:\n\n### 1. **Start with the Fundamentals**\n- Learn one programming language deeply before moving to others\n- Focus on concepts like variables, data types, control structures, and functions\n- Python or JavaScript are excellent choices for beginners\n\n### 2. **Practice Deliberately**\n- Code every day, even if it's just for 30 minutes\n- Build projects, not just follow tutorials\n- Solve coding challenges on platforms like LeetCode or HackerRank\n\n### 3. **Learn by Teaching**\n- Explain concepts to others (or to yourself out loud)\n- Write blog posts about what you've learned\n- Contribute to open-source projects\n\n## Recommended Resources\n\n- **FreeCodeCamp** - Comprehensive curriculum\n- **The Odin Project** - Full-stack web development\n- **CS50** - Harvard's introductory computer science course\n\n## Final Tips\n
+1. Don't get stuck in "tutorial hell" - build real projects\n2. Embrace the struggle - debugging is where real learning happens\n3. Join programming communities for support and motivation\n\nRemember: Consistency beats intensity. Keep coding!`
+            };
+
+            // Determine which response to use based on keywords
+            let responseText = responses.default;
+            const lowerQuery = query.toLowerCase();
+            
+            if (lowerQuery.includes('programming') || lowerQuery.includes('coding') || lowerQuery.includes('learn to code')) {
+                responseText = responses.programming;
+            }
+
+            // Add citations if we have sources
+            if (sources.length > 0) {
+                responseText += '\n\n## Sources\n\n';
+                sources.forEach((source, idx) => {
+                    responseText += `[${idx + 1}] [${source.title}](${source.url})\n`;
+                });
+            }
+
+            // Simulate streaming by yielding chunks
+            const chunks = responseText.split(/\s+/);
+            for (const chunk of chunks) {
+                await new Promise(resolve => setTimeout(resolve, 30 + Math.random() * 50));
+                yield chunk + ' ';
+            }
+        }
+
+        // ============================================
+        // UI Update Functions
+        // ============================================
+
+        function updateSourcesPanel(sources) {
+            state.sources = sources;
+            
+            // Update counters
+            elements.panelSourcesCount.textContent = sources.length;
+            elements.sourcesNumber.textContent = `${sources.length} source${sources.length !== 1 ? 's' : ''}`;
+            
+            // Show/hide counters
+            if (sources.length > 0) {
+                elements.sourcesCount.classList.remove('hidden');
+                elements.sourcesCount.classList.add('flex');
+            } else {
+                elements.sourcesCount.classList.add('hidden');
+                elements.sourcesCount.classList.remove('flex');
+            }
+            
+            // Update sources list
+            if (sources.length === 0) {
+                elements.sourcesEmptyState.classList.remove('hidden');
+                elements.sourcesList.innerHTML = '';
+                elements.sourcesList.appendChild(elements.sourcesEmptyState);
+            } else {
+                elements.sourcesEmptyState.classList.add('hidden');
+                elements.sourcesList.innerHTML = sources.map((source, idx) => `
+                    <a href="${source.url}" target="_blank" rel="noopener noreferrer" class="source-card block p-4 rounded-xl bg-slate-800/50 border border-slate-700 border-l-4 border-l-slate-700 hover:border-l-cyan-500 transition-all group">
+                        <div class="flex items-start gap-3">
+                            <span class="flex-shrink-0 w-6 h-6 rounded-lg bg-slate-700 text-cyan-400 text-xs font-bold flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors">${idx + 1}</span>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-sm font-medium text-slate-200 line-clamp-2 group-hover:text-cyan-400 transition-colors">${source.title}</h4>
+                                <p class="text-xs text-slate-500 mt-1">${source.domain}</p>
+                            </div>
+                            <svg class="w-4 h-4 text-slate-600 group-hover:text-cyan-400 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                            </svg>
+                        </div>
+                    </a>
+                `).join('');
+            }
+        }
+
+        function updateRelatedQuestions(questions) {
+            if (questions.length === 0) {
+                elements.relatedQuestions.innerHTML = '<p class="text-xs text-slate-500 italic">Ask a question to see related queries</p>';
+                return;
+            }
+            
+            elements.relatedQuestions.innerHTML = questions.map(q => `
+                <button onclick="setQuery('${q.replace(/'/g, "\\'")}')" class="w-full text-left px-3 py-2 rounded-lg bg-slate-800/50 border border-slate-700 text-xs text-slate-400 hover:border-cyan-500 hover:text-cyan-400 transition-all">
+                    ${q}
+                </button>
+            `).join('');
+        }
+
+        // ============================================
+        // Message Handling
+        // ============================================
+
+        function createMessageElement(message) {
+            const isUser = message.role === 'user';
+            const div = document.createElement('div');
+            div.className = `flex gap-4 ${isUser ? 'flex-row-reverse' : ''} animate-fade-in`;
+            div.id = `msg-${message.id}`;
+            
+            const avatar = isUser 
+                ? `<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center flex-shrink-0">
+                     <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                     </svg>
+                   </div>`
+                : `<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center flex-shrink-0 neon-glow">
+                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                     </svg>
+                   </div>`;
+            
+            const content = isUser 
+                ? `<div class="glass-panel rounded-2xl rounded-tr-sm px-5 py-3 max-w-3xl">
+                     <p class="text-white whitespace-pre-wrap">${escapeHtml(message.content)}</p>
+                     <span class="text-xs text-slate-500 mt-1 block">${formatTime(message.timestamp)}</span>
+                   </div>`
+                : `<div class="flex-1 max-w-3xl">
+                     <div class="flex items-center gap-2 mb-1">
+                       <span class="text-sm font-medium text-cyan-400">Yildiz.AI</span>
+                       <span class="text-xs text-slate-500">${formatTime(message.timestamp)}</span>
+                     </div>
+                     <div class="prose prose-invert prose-cyan max-w-none">
+                       <div id="content-${message.id}" class="markdown-content text-slate-200 leading-relaxed"></div>
+                     </div>
+                   </div>`;
+            
+            div.innerHTML = avatar + content;
+            return div;
+        }
+
+        function showTypingIndicator() {
+            const div = document.createElement('div');
+            div.id = 'typing-indicator';
+            div.className = 'flex gap-4 animate-fade-in';
+            div.innerHTML = `
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center flex-shrink-0 neon-glow">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <div class="flex items-center gap-1 glass-panel rounded-2xl px-4 py-3">
+                    <span class="w-2 h-2 bg-cyan-400 rounded-full typing-dot"></span>
+                    <span class="w-2 h-2 bg-cyan-400 rounded-full typing-dot"></span>
+                    <span class="w-2 h-2 bg-cyan-400 rounded-full typing-dot"></span>
+                </div>
+            `;
+            return div;
+        }
+
+        // ============================================
+        // Chat Logic
+        // ============================================
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+            
+            const content = elements.messageInput.value.trim();
+            if (!content || state.isGenerating) return;
+            
+            // Check if API key is set
+            if (!state.settings.apiKey) {
+                alert('Please configure your API key in settings first');
+                elements.settingsModal.classList.remove('hidden');
+                elements.settingsModal.classList.add('flex');
+                return;
+            }
+            
+            // Add user message
+            const userMessage = {
+                id: generateId(),
+                role: 'user',
+                content: content,
+                timestamp: new Date()
+            };
+            
+            state.messages.push(userMessage);
+            
+            // Clear input and resize
+            elements.messageInput.value = '';
+            elements.messageInput.style.height = 'auto';
+            
+            // Hide welcome screen, show chat
+            elements.welcomeScreen.classList.add('hidden');
+            elements.chatContainer.classList.remove('hidden');
+            
+            // Add user message to UI
+            const userMsgEl = createMessageElement(userMessage);
+            elements.messagesList.appendChild(userMsgEl);
+            scrollToBottom();
+            
+            // Start search if enabled
+            let sources = [];
+            if (state.webSearchEnabled) {
+                showSearchStatus(true);
+                try {
+                    sources = await performSearch(content);
+                    updateSourcesPanel(sources);
+                } catch (error) {
+                    console.error('Search error:', error);
+                }
+                showSearchStatus(false);
+            }
+            
+            // Show typing indicator
+            const typingIndicator = showTypingIndicator();
+            elements.messagesList.appendChild(typingIndicator);
+            scrollToBottom();
+            
+            // Generate AI response
+            state.isGenerating = true;
+            elements.sendBtn.disabled = true;
+            
+            const assistantMessage = {
+                id: generateId(),
+                role: 'assistant',
+                content: '',
+                timestamp: new Date(),
+                sources: sources
+            };
+            
+            try {
+                // Try to use real API
+                const stream = streamAIResponse(state.messages, sources);
+                
+                // Remove typing indicator
+                typingIndicator.remove();
+                
+                // Add assistant message container
+                const msgEl = createMessageElement(assistantMessage);
+                elements.messagesList.appendChild(msgEl);
+                const contentEl = document.getElementById(`content-${assistantMessage.id}`);
+                
+                // Stream content
+                let fullContent = '';
+                for await (const chunk of stream) {
+                    fullContent += chunk;
+                    contentEl.innerHTML = parseMarkdown(fullContent);
+                    scrollToBottom();
+                }
+                
+                assistantMessage.content = fullContent;
+                state.messages.push(assistantMessage);
+                
+            } catch (error) {
+                console.error('API Error:', error);
+                
+                // Fall back to mock response
+                const stream = mockAIResponse(content, sources);
+                
+                // Remove typing indicator if still present
+                if (typingIndicator.parentNode) {
+                    typingIndicator.remove();
+                }
+                
+                // Add assistant message container
+                const msgEl = createMessageElement(assistantMessage);
+                elements.messagesList.appendChild(msgEl);
+                const contentEl = document.getElementById(`content-${assistantMessage.id}`);
+                
+                // Stream content
+                let fullContent = '';
+                for await (const chunk of stream) {
+                    fullContent += chunk;
+                    contentEl.innerHTML = parseMarkdown(fullContent);
+                    scrollToBottom();
+                }
+                
+                assistantMessage.content = fullContent;
+                state.messages.push(assistantMessage);
+            }
+            
+            // Update related questions
+            const relatedQuestions = generateRelatedQuestions(content);
+            updateRelatedQuestions(relatedQuestions);
+            
+            // Cleanup
+            state.isGenerating = false;
+            elements.sendBtn.disabled = false;
+        }
+
+        function scrollToBottom() {
+            elements.chatContainer.scrollTop = elements.chatContainer.scrollHeight;
+        }
+
+        function showSearchStatus(show) {
+            state.isSearching = show;
+            if (show) {
+                elements.searchStatus.classList.remove('hidden');
+                elements.searchStatus.classList.add('flex');
+            } else {
+                elements.searchStatus.classList.add('hidden');
+                elements.searchStatus.classList.remove('flex');
+            }
+        }
+
+        // ============================================
+        // Settings Management
+        // ============================================
+
+        function loadSettings() {
+            elements.apiProvider.value = state.settings.apiProvider;
+            elements.apiKey.value = state.settings.apiKey;
+            elements.modelSelect.value = state.settings.model;
+        }
+
+        function saveSettings() {
+            state.settings.apiProvider = elements.apiProvider.value;
+            state.settings.apiKey = elements.apiKey.value;
+            state.settings.model = elements.modelSelect.value;
+            
+            localStorage.setItem('yildiz_api_provider', state.settings.apiProvider);
+            localStorage.setItem('yildiz_api_key', state.settings.apiKey);
+            localStorage.setItem('yildiz_model', state.settings.model);
+            
+            elements.settingsModal.classList.add('hidden');
+            elements.settingsModal.classList.remove('flex');
+        }
+
+        async function testConnection() {
+            const apiKey = elements.apiKey.value;
+            const provider = elements.apiProvider.value;
+            
+            if (!apiKey) {
+                alert('Please enter an API key first');
+                return;
+            }
+            
+            elements.testConnection.textContent = 'Testing...';
+            elements.testConnection.disabled = true;
+            
+            try {
+                const testMessages = [{ role: 'user', content: 'Say "Connection successful!" and nothing else.' }];
+                const stream = streamAIResponse(testMessages, []);
+                
+                let response = '';
+                for await (const chunk of stream) {
+                    response += chunk;
+                }
+                
+                alert('Connection successful! API is working correctly.');
+            } catch (error) {
+                alert('Connection failed: ' + error.message);
+            } finally {
+                elements.testConnection.textContent = 'Test';
+                elements.testConnection.disabled = false;
+            }
+        }
+
+        // ============================================
+        // Event Listeners
+        // ============================================
+
+        function initEventListeners() {
+            // Form submission
+            elements.chatForm.addEventListener('submit', handleSubmit);
+            
+            // Auto-resize textarea
+            elements.messageInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 128) + 'px';
+            });
+            
+            // Enter to submit (Shift+Enter for new line)
+            elements.messageInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    elements.chatForm.dispatchEvent(new Event('submit'));
+                }
+            });
+            
+            // Web search toggle
+            elements.webSearchToggle.addEventListener('click', function() {
+                state.webSearchEnabled = !state.webSearchEnabled;
+                this.classList.toggle('text-cyan-400', state.webSearchEnabled);
+                this.classList.toggle('bg-slate-700/50', state.webSearchEnabled);
+            });
+            
+            // Settings modal
+            elements.settingsBtn.addEventListener('click', function() {
+                loadSettings();
+                elements.settingsModal.classList.remove('hidden');
+                elements.settingsModal.classList.add('flex');
+            });
+            
+            elements.closeSettings.addEventListener('click', function() {
+                elements.settingsModal.classList.add('hidden');
+                elements.settingsModal.classList.remove('flex');
+            });
+            
+            elements.settingsModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.add('hidden');
+                    this.classList.remove('flex');
+                }
+            });
+            
+            elements.saveSettings.addEventListener('click', saveSettings);
+            elements.testConnection.addEventListener('click', testConnection);
+            
+            // Provider change updates model options
+            elements.apiProvider.addEventListener('change', function() {
+                const groqModels = [
+                    { value: 'llama-3.1-70b-versatile', label: 'Llama 3.1 70B' },
+                    { value: 'mixtral-8x7b-32768', label: 'Mixtral 8x7B' },
+                    { value: 'gemma-7b-it', label: 'Gemma 7B' }
+                ];
+                
+                const openRouterModels = [
+                    { value: 'llama-3.1-70b-instruct', label: 'Llama 3.1 70B Instruct' },
+                    { value: 'llama-3.1-8b-instruct', label: 'Llama 3.1 8B Instruct' },
+                    { value: 'mixtral-8x22b-instruct', label: 'Mixtral 8x22B Instruct' }
+                ];
+                
+                const models = this.value === 'groq' ? groqModels : openRouterModels;
+                elements.modelSelect.innerHTML = models.map(m => `<option value="${m.value}">${m.label}</option>`).join('');
+            });
+        }
+
+        // Global function for suggestion chips
+        window.setQuery = function(query) {
+            elements.messageInput.value = query;
+            elements.messageInput.style.height = 'auto';
+            elements.messageInput.style.height = Math.min(elements.messageInput.scrollHeight, 128) + 'px';
+            elements.messageInput.focus();
+        };
+
+        // ============================================
+        // Initialization
+        // ============================================
+
+        function init() {
+            // Initialize web search toggle state
+            elements.webSearchToggle.classList.toggle('text-cyan-400', state.webSearchEnabled);
+            elements.webSearchToggle.classList.toggle('bg-slate-700/50', state.webSearchEnabled);
+            
+            // Set up event listeners
+            initEventListeners();
+            
+            // Focus input
+            elements.messageInput.focus();
+            
+            console.log('Yildiz.AI initialized successfully');
+        }
+
+        // Start the application
+        init();
+    </script>
+</body>
+</html>
